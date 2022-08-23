@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useAppDispatch } from "../../../app/hooks"
-import { anyQuestionIsSelecteed, selectAllQuestionIds, selectSelectedQuestion, setToNextQuestion } from "../quizSlice"
+import { anyQuestionIsSelecteed, selectAllQuestionIds, selectSelectedQuestion, setSelectedQuestion, setToNextQuestion } from "../quizSlice"
 
 export default () => {
     const anyIsSelected = useSelector(anyQuestionIsSelecteed)
@@ -42,15 +42,24 @@ function ShowSelectableQuestions() {
     const ids = useSelector(selectAllQuestionIds)
 
     return (
-        <div>
+        <div className="my-3">
             {ids.map(ShowSelectableQuestion)}
         </div>
     )
 }
 
 function ShowSelectableQuestion(id: string) {
+    const dispatch = useAppDispatch()
+
+    const switchToQuestion = () => dispatch(setSelectedQuestion(id))
 
     return (
-        <span>{id}</span>
+        <a>
+            <span
+                onClick={switchToQuestion}
+                className="px-2 py-2 mx-1 rounded-md bg-green-300 cursor-pointer">
+                {id}
+            </span>
+        </a>
     )
 }
