@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import './index.css';
 import Quiz from './features/quiz/comps/Quiz';
 
 function App() {
