@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { RootState } from "../../app/store"
 
+import questions from "../../assets/questions.json"
 
 export interface QuestionAnswer {
     id: string,
@@ -28,7 +29,7 @@ export interface QuizState {
 }
 
 const initialState: QuizState = {
-    questions: [],
+    questions: questions,
     selectedAnswers: []
 }
 
