@@ -35,7 +35,14 @@ const initialState: QuizState = {
 }
 
 // this will be used to determine wether to show a radio or a checkbox
-const isQuizMultiSelection = (que: Question) => que.correctAnswersIds.length > 1
+export const isQuestionMultiSelection = (que: Question) => que.correctAnswersIds.length > 1
+
+export const selectSelectedAnswersForQ = (props: { state: RootState, qid: string }) => {
+    return props.state.quiz.selectedAnswers.find(e => e.qid === props.qid)
+}
+
+export const isAnswerSelected = (props: { state: RootState, qid: string, ansid: string }) => selectSelectedAnswersForQ({ state: props.state, qid: props.qid })?.ansids.includes(props.ansid)
+
 
 const isAnswerCorrect = (ans: QuestionAnswer, que: Question) => que.correctAnswersIds.includes(ans.id)
 
@@ -66,6 +73,44 @@ export const quizSlice = createSlice(
         reducers: {
             setSelectedQuestion: (state, action: PayloadAction<string>) => {
                 state.selectedQuestionId = action.payload
+            },
+            // for checkboxes
+            toggleAnswer: (state, action: PayloadAction<{ qid: string, ansid: string, ischecked: boolean }>) => {
+                state.selectedAnswers = state.selectedAnswers.map(e => {
+                    if (e.qid != action.payload.qid) return e
+
+                    const ecopy = { ...e }
+
+                    if (action.payload.ischecked) {
+                        ecopy.ansids.push(action.payload.ansid)
+                    } else {
+                        ecopy.ansids = ecopy.ansids.filter(e => e != action.payload.ansid)
+                    }
+
+                    return ecopy
+                })
+            },
+            // for radios, it invalidates all other options
+            setAnswer: (state, action: PayloadAction<{ qid: string, ansid: string }>) => {
+
+                if (!state.selectedAnswers.some(e => e.qid === action.payload.qid)) {
+                    state.selectedAnswers = [
+                        ...state.selectedAnswers,
+                        {
+                            qid: action.payload.qid,
+                            ansids: [action.payload.ansid]
+                        }
+                    ]
+                }
+
+                state.selectedAnswers = state.selectedAnswers.map(e => {
+                    if (e.qid != action.payload.qid) return e
+
+                    return {
+                        ...e,
+                        ansids: [action.payload.ansid]
+                    }
+                })
             }
         }
     }
@@ -101,7 +146,7 @@ export const selectSelectedQuestion = (state: RootState) => {
 export const selectAllQuestions = (state: RootState) => state.quiz.questions
 export const selectAllQuestionIds = (state: RootState) => selectAllQuestions(state).map(e => e.id)
 
-export const { setSelectedQuestion } = quizSlice.actions
+export const { setSelectedQuestion, toggleAnswer, setAnswer } = quizSlice.actions
 
 export const setToNextQuestion = (): AppThunk =>
     (dispatch, getState) => {
