@@ -87,7 +87,7 @@ export const selectLastQuestion = (state: RootState) => {
 }
 
 
-export const selectCurrentQuestion = (state: RootState) => {
+export const selectSelectedQuestion = (state: RootState) => {
     const quz = state.quiz
     const slctd = selectCurrentQuestionId(state)
 
@@ -97,6 +97,9 @@ export const selectCurrentQuestion = (state: RootState) => {
 
     return quz.questions.find(e => e.id == slctd)
 }
+
+export const selectAllQuestions = (state: RootState) => state.quiz.questions
+export const selectAllQuestionIds = (state: RootState) => selectAllQuestions(state).map(e => e.id)
 
 export const { setSelectedQuestion } = quizSlice.actions
 
