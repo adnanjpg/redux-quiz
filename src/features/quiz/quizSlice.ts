@@ -53,9 +53,6 @@ export const isAnswered = (props: { state: RootState, qid: string }) => !!(selec
 
 export const isAnswerSelected = (props: { state: RootState, qid: string, ansid: string }) => selectSelectedAnswersForQ({ state: props.state, qid: props.qid })?.ansids.includes(props.ansid)
 
-
-const isAnswerCorrect = (ans: QuestionAnswer, que: Question) => que.correctAnswersIds.includes(ans.id)
-
 const isFirstQuestion = (que: Question, state: RootState) => {
     let fQ = selectFirstQuestion(state)
 
@@ -244,10 +241,12 @@ export const quizSlice = createSlice(
             },
             setProgState: (state, action: PayloadAction<QuizProgressState>) => {
                 state.progState = action.payload
-            }
+            },
+            resetQuiz: (state) => state = initialState
         }
     }
 )
-export const { setSelectedQuestion, toggleAnswer, setAnswer, setProgState } = quizSlice.actions
+
+export const { setSelectedQuestion, toggleAnswer, setAnswer, setProgState, resetQuiz } = quizSlice.actions
 
 export default quizSlice.reducer;

@@ -1,5 +1,3 @@
-import { Children } from "react"
-
 /**
 when you wanna wrap a component with the same 2 components,
 e.g. when using a flexbox to keep an element in the center of the

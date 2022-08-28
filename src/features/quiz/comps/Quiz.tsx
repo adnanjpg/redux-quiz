@@ -1,7 +1,7 @@
 import Sandwich from "../../../app/comps/sandwich"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
-import { isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer, selectQuizHasStarted, selectQuizIsConfirmingFinish, selectQuizIsFinished, setProgState, QuizProgressState, selectQuizIsOngoing, selectAnyQuestionIsSelecteed, selectFinalScore } from "../quizSlice"
+import { isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer, selectQuizHasStarted, selectQuizIsConfirmingFinish, selectQuizIsFinished, setProgState, QuizProgressState, selectQuizIsOngoing, selectAnyQuestionIsSelecteed, selectFinalScore, resetQuiz } from "../quizSlice"
 
 function QuizWrapper(props: { children: JSX.Element }): JSX.Element {
     return (
@@ -101,6 +101,8 @@ function ConfirmFinish() {
 }
 
 function QuizFinished() {
+    const dispatch = useAppDispatch()
+
     const finalScore = useAppSelector(selectFinalScore)
     const actual = finalScore[0], total = finalScore[1]
 
@@ -109,22 +111,32 @@ function QuizFinished() {
     const isThird = resultDivision <= .33
     const isSecondThird = resultDivision <= .66
 
+    const onReset = () => {
+        dispatch(resetQuiz())
+    }
 
     return (
         <div className="flex flex-col h-full justify-center">
             <div className="my-auto text-center">
-                <div className="text-xl my-5">
-                    You got {actual + '/' + total} points
+                <div className="my-8">
+                    <div className="text-xl my-4">
+                        You got {actual + '/' + total} points
+                    </div>
+                    <div className="text-base">
+                        {
+                            isThird ?
+                                "You totally suck" :
+                                isSecondThird ?
+                                    "You kinda suck" :
+                                    "You're amazing"
+                        }
+                    </div>
                 </div>
-                <div className="text-base">
-                    {
-                        isThird ?
-                            "You totally suck" :
-                            isSecondThird ?
-                                "You kinda suck" :
-                                "You're amazing"
-                    }
-                </div>
+                <button
+                    className="primary-button"
+                    onClick={onReset}
+                >Retake
+                </button>
             </div>
         </div>
 
