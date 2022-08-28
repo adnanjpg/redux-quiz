@@ -11,6 +11,14 @@ https://colorhunt.co/palette/554994f675a8f29393ffccb3
 #FFCCB3
 */
 
+.bg-primary {
+    background-color: #554994;
+}
+
+.bg-secondary {
+    background-color: #F675A8;
+}
+
 .primary-button {
     background-color: #554994;
     padding: .6em .9em;

@@ -10,11 +10,31 @@ export default () => {
     if (!anyIsSelected) return NotStartedQuiz()
 
     return (
-        <div className="flex flex-row">
+        <div className="flex flex-row h-screen">
+
             <div className="w-3 sm:w-10 md:w-36 lg:w-96"></div>
+
             <div className="grow">
-                <ShowSelectedQuestion></ShowSelectedQuestion>
-                <ShowSelectableQuestions></ShowSelectableQuestions>
+
+                <div className="flex flex-col h-screen">
+
+                    <div className="grow">
+                        <div className="flex flex-col h-full">
+                            <div className="my-auto">
+                                <ShowSelectedQuestion></ShowSelectedQuestion>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="h-12">
+                        <div className="flex flex-row justify-center align-middle">
+                            <ShowSelectableQuestions></ShowSelectableQuestions>
+                        </div>
+                    </div>
+
+                </div>
+
+
             </div>
             <div className="sm:w-10 md:w-16 lg:w-96"></div>
         </div>
@@ -155,7 +175,7 @@ function ShowSelectableQuestions() {
     const ids = useSelector(selectAllQuestionIds)
 
     return (
-        <div className="my-3">
+        <div>
             {ids.map(ShowSelectableQuestion)}
         </div>
     )
@@ -167,14 +187,16 @@ function ShowSelectableQuestion(id: string) {
     const switchToQuestion = () => dispatch(setSelectedQuestion(id))
 
     return (
-        <div key={id}>
+        <span
+            className="px-2 py-2 mx-1 rounded-md bg-secondary cursor-pointer"
+            key={id}
+        >
             <a>
                 <span
-                    onClick={switchToQuestion}
-                    className="px-2 py-2 mx-1 rounded-md bg-green-300 cursor-pointer">
+                    onClick={switchToQuestion}>
                     {id}
                 </span>
             </a>
-        </div>
+        </span>
     )
 }
