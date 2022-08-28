@@ -1,10 +1,9 @@
-import { useSelector } from "react-redux"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
 import { anyQuestionIsSelecteed, isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer } from "../quizSlice"
 
 export default () => {
-    const anyIsSelected = useSelector(anyQuestionIsSelecteed)
+    const anyIsSelected = useAppSelector(anyQuestionIsSelecteed)
 
     if (!anyIsSelected) return NotStartedQuiz()
 
@@ -57,7 +56,7 @@ function NotStartedQuiz() {
 }
 
 function ShowSelectedQuestion() {
-    const selected = useSelector(selectSelectedQuestion)!
+    const selected = useAppSelector(selectSelectedQuestion)!
 
     return <div>
         <div className="my-3">{selected.text}</div>
@@ -68,7 +67,7 @@ function ShowSelectedQuestion() {
 }
 
 function ShowQuestionAnswers() {
-    const selectedQ = useSelector(selectSelectedQuestion)!
+    const selectedQ = useAppSelector(selectSelectedQuestion)!
 
     let answers = selectedQ.answers
 
@@ -85,10 +84,10 @@ function ShowQuestionAnswers() {
 function ShowQuestionAnswersRadio() {
     const dispatch = useAppDispatch()
 
-    const selectedQ = useSelector(selectSelectedQuestion)!
+    const selectedQ = useAppSelector(selectSelectedQuestion)!
     const qid = selectedQ.id
 
-    const selectedAnswers = useSelector(state => selectSelectedAnswersForQ({
+    const selectedAnswers = useAppSelector(state => selectSelectedAnswersForQ({
         state: state as RootState,
         qid: qid,
     }))?.ansids
@@ -134,12 +133,12 @@ function ShowQuestionAnswersRadio() {
 function ShowQAnswerCheckbox(ans: QuestionAnswer) {
     const dispatch = useAppDispatch()
 
-    const selectedQ = useSelector(selectSelectedQuestion)!
+    const selectedQ = useAppSelector(selectSelectedQuestion)!
 
     const qid = selectedQ.id
     const ansid = ans.id
 
-    const isAnsSelected = useSelector(state => isAnswerSelected({
+    const isAnsSelected = useAppSelector(state => isAnswerSelected({
         state: state as RootState,
         qid: qid,
         ansid: ansid,
@@ -171,7 +170,7 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
 function ShowSelectableQuestions() {
     const dispatch = useAppDispatch()
 
-    const ids = useSelector(selectAllQuestionIds)
+    const ids = useAppSelector(selectAllQuestionIds)
 
     const isFirst = useAppSelector(selectIsInFirstQuestion)
     const isLast = useAppSelector(selectIsInLastQuestion)
