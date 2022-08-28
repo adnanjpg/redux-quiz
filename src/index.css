@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+palette:
+https://colorhunt.co/palette/554994f675a8f29393ffccb3
+#554994
+#F675A8
+#F29393
+#FFCCB3
+*/
+
+.primary-button {
+    background-color: #554994;
+    padding: .6em .9em;
+    color: #fff;
+    border-radius: 5px;
+}

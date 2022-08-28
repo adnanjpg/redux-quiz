@@ -21,12 +21,13 @@ function NotStartedQuiz() {
     const startQuiz = () => dispatch(setToNextQuestion())
 
     return (
-        <div>
-            <span>
+        <div className="flex flex-col items-center justify-center h-screen">
+            <span className="text-xl">
                 Welcome to the Friends Quiz
             </span>
-            <div>
-                <button onClick={startQuiz}>lets get Started!</button>
+            <div className="my-3"></div>
+            <div className="text-xl">
+                <button className="primary-button" onClick={startQuiz}>lets get Started!</button>
             </div>
         </div>
     )
