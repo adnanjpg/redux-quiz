@@ -223,6 +223,7 @@ function ShowSelectableQuestion(id: string) {
         >
             <a>
                 <span
+                    className="text-white"
                     onClick={switchToQuestion}>
                     {id}
                 </span>
