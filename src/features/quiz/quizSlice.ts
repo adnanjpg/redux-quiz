@@ -41,6 +41,8 @@ export const selectSelectedAnswersForQ = (props: { state: RootState, qid: string
     return props.state.quiz.selectedAnswers.find(e => e.qid === props.qid)
 }
 
+export const isAnswered = (props: { state: RootState, qid: string }) => !!(selectSelectedAnswersForQ({ state: props.state, qid: props.qid })?.ansids)
+
 export const isAnswerSelected = (props: { state: RootState, qid: string, ansid: string }) => selectSelectedAnswersForQ({ state: props.state, qid: props.qid })?.ansids.includes(props.ansid)
 
 

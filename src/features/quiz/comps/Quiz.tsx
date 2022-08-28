@@ -1,8 +1,7 @@
-import { useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
-import { anyQuestionIsSelecteed, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer } from "../quizSlice"
+import { anyQuestionIsSelecteed, isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer } from "../quizSlice"
 
 export default () => {
     const anyIsSelected = useSelector(anyQuestionIsSelecteed)
@@ -215,10 +214,11 @@ function ShowSelectableQuestion(id: string) {
     const dispatch = useAppDispatch()
 
     const switchToQuestion = () => dispatch(setSelectedQuestion(id))
+    const isAns = useAppSelector(state => isAnswered({ state: state, qid: id }))
 
     return (
         <span
-            className="px-2 py-2 mx-1 rounded-md bg-secondary cursor-pointer"
+            className={`bg-secondary px-2 py-2 mx-1 rounded-md cursor-pointer ${isAns ? "bg-cool" : "bg-secondary"}`}
             key={id}
         >
             <a>

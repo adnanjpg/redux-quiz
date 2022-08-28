@@ -9,6 +9,10 @@ https://colorhunt.co/palette/554994f675a8f29393ffccb3
 #F675A8
 #F29393
 #FFCCB3
+
+AND
+
+#ace1af
 */
 
 .bg-primary {
@@ -17,6 +21,10 @@ https://colorhunt.co/palette/554994f675a8f29393ffccb3
 
 .bg-secondary {
     background-color: #F675A8;
+}
+
+.bg-cool {
+    background-color: #ace1af
 }
 
 .primary-button {
