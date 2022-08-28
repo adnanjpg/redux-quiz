@@ -150,7 +150,7 @@ export const { setSelectedQuestion, toggleAnswer, setAnswer } = quizSlice.action
 
 export const setToNextQuestion = (): AppThunk =>
     (dispatch, getState) => {
-        const currentValue = selectCurrentQuestionId(getState()) || "1";
+        const currentValue = selectCurrentQuestionId(getState()) || "0";
 
         try {
             const intId: number = +currentValue
