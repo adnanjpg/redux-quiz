@@ -44,3 +44,10 @@ AND
 .secondary-button:disabled {
     background-color: #FFCCB3;
 }
+
+.secondary-button-bordered {
+    border: 1px solid #F675A8;
+    padding: .6em .9em;
+    color: #F675A8;
+    border-radius: 5px;
+}

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import assert from "assert"
 import { AppThunk, RootState } from "../../app/store"
 
 import questions from "../../assets/questions.json"
@@ -23,13 +22,22 @@ export interface SelectedAnswer {
     ansids: Array<string>
 }
 
+export enum QuizProgressState {
+    NotStarted,
+    Ongoing,
+    ConfirmingFinish,
+    Finished
+}
+
 export interface QuizState {
+    progState: QuizProgressState,
     selectedQuestionId?: string,
     questions: Array<Question>,
     selectedAnswers: Array<SelectedAnswer>
 }
 
 const initialState: QuizState = {
+    progState: QuizProgressState.NotStarted,
     questions: questions,
     selectedAnswers: []
 }
@@ -67,6 +75,75 @@ const isLastQuestion = (que: Question, state: RootState) => {
 
     return que.id == lQ.id
 }
+
+
+export const selectAnyQuestionIsSelecteed = (state: RootState) => state.quiz.selectedQuestionId != null
+
+export const selectCurrentQuestionId = (state: RootState) => state.quiz.selectedQuestionId
+
+export const selectFirstQuestion = (state: RootState) => state.quiz.questions.at(0)
+
+export const selectQuizProgState = (state: RootState) => state.quiz.progState
+export const selectQuizHasStarted = (state: RootState) => state.quiz.progState != QuizProgressState.NotStarted
+export const selectQuizIsConfirmingFinish = (state: RootState) => state.quiz.progState == QuizProgressState.ConfirmingFinish
+export const selectQuizIsFinished = (state: RootState) => state.quiz.progState == QuizProgressState.Finished
+export const selectQuizIsOngoing = (state: RootState) => state.quiz.progState == QuizProgressState.Ongoing
+
+export const selectLastQuestion = (state: RootState) => {
+    const q = state.quiz
+    const ques = q.questions
+
+    const len = ques.length
+
+    return ques.at(len - 1)
+}
+
+export const selectSelectedQuestion = (state: RootState) => {
+    const quz = state.quiz
+    const slctd = selectCurrentQuestionId(state)
+
+    if (slctd == null) {
+        return null
+    }
+
+    return quz.questions.find(e => e.id == slctd)
+}
+
+export const selectAllQuestions = (state: RootState) => state.quiz.questions
+export const selectAllQuestionIds = (state: RootState) => selectAllQuestions(state).map(e => e.id)
+
+export const selectIsInFirstQuestion = (state: RootState) => isFirstQuestion(selectSelectedQuestion(state)!, state)
+export const selectIsInLastQuestion = (state: RootState) => isLastQuestion(selectSelectedQuestion(state)!, state)
+
+export const setToPrevQuestion = (): AppThunk =>
+    (dispatch, getState) => {
+        const currentValue = selectCurrentQuestionId(getState()) || "1";
+
+        try {
+            const intId: number = +currentValue
+
+            dispatch(setSelectedQuestion(String(intId - 1)))
+
+        } catch (error) {
+            throw new Error("Ur id should be int convertible!!!");
+        }
+    };
+
+export const setToNextQuestion = (): AppThunk =>
+    (dispatch, getState) => {
+        const currentValue = selectCurrentQuestionId(getState()) || "0";
+
+        try {
+            const intId: number = +currentValue
+
+            dispatch(setSelectedQuestion(String(intId + 1)))
+
+        } catch (error) {
+            throw new Error("Ur id should be int convertible!!!");
+        }
+    };
+
+
 
 export const quizSlice = createSlice(
     {
@@ -113,71 +190,13 @@ export const quizSlice = createSlice(
                         ansids: [action.payload.ansid]
                     }
                 })
+            },
+            setProgState: (state, action: PayloadAction<QuizProgressState>) => {
+                state.progState = action.payload
             }
         }
     }
 )
-
-export const anyQuestionIsSelecteed = (state: RootState) => state.quiz.selectedQuestionId != null
-
-export const selectCurrentQuestionId = (state: RootState) => state.quiz.selectedQuestionId
-
-export const selectFirstQuestion = (state: RootState) => state.quiz.questions.at(0)
-
-export const selectLastQuestion = (state: RootState) => {
-    const q = state.quiz
-    const ques = q.questions
-
-    const len = ques.length
-
-    return ques.at(len - 1)
-}
-
-
-export const selectSelectedQuestion = (state: RootState) => {
-    const quz = state.quiz
-    const slctd = selectCurrentQuestionId(state)
-
-    if (slctd == null) {
-        return null
-    }
-
-    return quz.questions.find(e => e.id == slctd)
-}
-
-export const selectAllQuestions = (state: RootState) => state.quiz.questions
-export const selectAllQuestionIds = (state: RootState) => selectAllQuestions(state).map(e => e.id)
-
-export const selectIsInFirstQuestion = (state: RootState) => isFirstQuestion(selectSelectedQuestion(state)!, state)
-export const selectIsInLastQuestion = (state: RootState) => isLastQuestion(selectSelectedQuestion(state)!, state)
-
-export const { setSelectedQuestion, toggleAnswer, setAnswer } = quizSlice.actions
-
-export const setToPrevQuestion = (): AppThunk =>
-    (dispatch, getState) => {
-        const currentValue = selectCurrentQuestionId(getState()) || "1";
-
-        try {
-            const intId: number = +currentValue
-
-            dispatch(setSelectedQuestion(String(intId - 1)))
-
-        } catch (error) {
-            throw new Error("Ur id should be int convertible!!!");
-        }
-    };
-export const setToNextQuestion = (): AppThunk =>
-    (dispatch, getState) => {
-        const currentValue = selectCurrentQuestionId(getState()) || "0";
-
-        try {
-            const intId: number = +currentValue
-
-            dispatch(setSelectedQuestion(String(intId + 1)))
-
-        } catch (error) {
-            throw new Error("Ur id should be int convertible!!!");
-        }
-    };
+export const { setSelectedQuestion, toggleAnswer, setAnswer, setProgState } = quizSlice.actions
 
 export default quizSlice.reducer;
