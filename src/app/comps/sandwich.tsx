@@ -7,12 +7,12 @@ screen, in this case the element is the `filling`, you want to
 sandwich it between 2 elements of specific width, in this case the
 `bun`
 */
-export default (props: { bun: JSX.Element, filling: JSX.Element }): JSX.Element => {
+export default (props: { bun: JSX.Element, children: JSX.Element }): JSX.Element => {
 
     return (
         <>
             {props.bun}
-            {props.filling}
+            {props.children}
             {props.bun}
         </>
     )

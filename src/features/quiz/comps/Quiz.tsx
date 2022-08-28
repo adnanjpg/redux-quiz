@@ -1,7 +1,17 @@
 import Sandwich from "../../../app/comps/sandwich"
 import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
-import { isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer, selectQuizHasStarted, selectQuizIsConfirmingFinish, selectQuizIsFinished, setProgState, QuizProgressState, selectQuizIsOngoing } from "../quizSlice"
+import { isAnswered, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer, selectQuizHasStarted, selectQuizIsConfirmingFinish, selectQuizIsFinished, setProgState, QuizProgressState, selectQuizIsOngoing, selectAnyQuestionIsSelecteed, selectFinalScore } from "../quizSlice"
+
+function QuizWrapper(props: { children: JSX.Element }): JSX.Element {
+    return (
+        <div className="flex flex-row h-screen">
+            <Sandwich bun={<div className="w-3 sm:w-10 md:w-36 lg:w-96"></div>}>
+                <div className="grow">{props.children}</div>
+            </Sandwich>
+        </div >
+    )
+}
 
 export default () => {
     const hasStarted = useAppSelector(selectQuizHasStarted)
@@ -9,25 +19,30 @@ export default () => {
     const isFinished = useAppSelector(selectQuizIsFinished)
     const isOngoing = useAppSelector(selectQuizIsOngoing)
 
-    let comp: JSX.Element = <></>
 
-    if (!hasStarted) comp = NotStartedQuiz()
-    if (isConfirmingFinish) comp = ConfirmFinish()
-    if (isFinished) comp = QuizFinished()
-    if (isOngoing) comp = QuizStateOngoing()
-
-    return (
-        <div className="flex flex-row h-screen">
-            <Sandwich
-                bun={
-                    <div className="w-3 sm:w-10 md:w-36 lg:w-96"></div>
-                }
-                filling={
-                    <div className="grow">{comp}</div>
-                }
-            ></Sandwich>
-        </div >
+    if (!hasStarted) return (
+        <QuizWrapper>
+            <NotStartedQuiz></NotStartedQuiz>
+        </QuizWrapper>
     )
+    if (isOngoing) return (
+        <QuizWrapper>
+            <QuizStateOngoing></QuizStateOngoing>
+        </QuizWrapper>
+    )
+    if (isConfirmingFinish) return (
+        <QuizWrapper>
+            <ConfirmFinish></ConfirmFinish>
+        </QuizWrapper>
+    )
+    if (isFinished) return (
+        <QuizWrapper>
+            <QuizFinished></QuizFinished>
+        </QuizWrapper>
+    )
+
+    return <></>
+
 }
 
 function NotStartedQuiz() {
@@ -86,7 +101,34 @@ function ConfirmFinish() {
 }
 
 function QuizFinished() {
-    return <div>finished</div>
+    const finalScore = useAppSelector(selectFinalScore)
+    const actual = finalScore[0], total = finalScore[1]
+
+    const resultDivision = actual / total
+
+    const isThird = resultDivision <= .33
+    const isSecondThird = resultDivision <= .66
+
+
+    return (
+        <div className="flex flex-col h-full justify-center">
+            <div className="my-auto text-center">
+                <div className="text-xl my-5">
+                    You got {actual + '/' + total} points
+                </div>
+                <div className="text-base">
+                    {
+                        isThird ?
+                            "You totally suck" :
+                            isSecondThird ?
+                                "You kinda suck" :
+                                "You're amazing"
+                    }
+                </div>
+            </div>
+        </div>
+
+    )
 }
 
 function QuizStateOngoing() {

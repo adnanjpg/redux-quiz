@@ -83,6 +83,57 @@ export const selectCurrentQuestionId = (state: RootState) => state.quiz.selected
 
 export const selectFirstQuestion = (state: RootState) => state.quiz.questions.at(0)
 
+/**
+ * 
+ * @param state 
+ * @returns a tuple with the actual score as the first element, and
+ * the total score as the second, e.g. 3.2 out of 5 -> [3.2,5]
+ * 
+ */
+export const selectFinalScore = (state: RootState): [number, number] => {
+    const quiz = state.quiz
+    const quests = quiz.questions
+    const sAnswers = quiz.selectedAnswers
+
+
+
+    let score = 0
+    let totalScore = quests.length
+
+    if (sAnswers) {
+
+        quests.forEach(que => {
+            const qid = que.id
+            let selectedAnswers = selectSelectedAnswersForQ({ state: state, qid: qid })?.ansids
+            let correctAnswers = sAnswers.find(e => e.qid === qid)?.ansids
+
+            if (!correctAnswers || !selectedAnswers) {
+                // if the question does not have correct answers,
+                // or the user has not marked any
+                return;
+            }
+
+            let an = correctAnswers
+
+            let correctAnswerCount = an.length
+
+            // what we wanna do is give a bit of score for each correct selection
+            // e.g. in multi selection questions, if there are 2 correct answers,
+            // the user will get .5 point for each correct selection, etc.
+
+            // so what we're gonna do is this:
+            // (count of selected answers that match the correct answers) / answerCount
+            let correctSelectedCount =
+                selectedAnswers.filter(e => an.includes(e)).length
+
+            score += correctSelectedCount / correctAnswerCount
+        });
+
+    }
+
+    return [score, totalScore]
+}
+
 export const selectQuizProgState = (state: RootState) => state.quiz.progState
 export const selectQuizHasStarted = (state: RootState) => state.quiz.progState != QuizProgressState.NotStarted
 export const selectQuizIsConfirmingFinish = (state: RootState) => state.quiz.progState == QuizProgressState.ConfirmingFinish
