@@ -25,3 +25,14 @@ https://colorhunt.co/palette/554994f675a8f29393ffccb3
     color: #fff;
     border-radius: 5px;
 }
+
+.secondary-button {
+    background-color: #F675A8;
+    padding: .6em .9em;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.secondary-button:disabled {
+    background-color: #FFCCB3;
+}

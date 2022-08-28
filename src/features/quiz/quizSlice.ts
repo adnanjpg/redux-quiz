@@ -146,8 +146,24 @@ export const selectSelectedQuestion = (state: RootState) => {
 export const selectAllQuestions = (state: RootState) => state.quiz.questions
 export const selectAllQuestionIds = (state: RootState) => selectAllQuestions(state).map(e => e.id)
 
+export const selectIsInFirstQuestion = (state: RootState) => isFirstQuestion(selectSelectedQuestion(state)!, state)
+export const selectIsInLastQuestion = (state: RootState) => isLastQuestion(selectSelectedQuestion(state)!, state)
+
 export const { setSelectedQuestion, toggleAnswer, setAnswer } = quizSlice.actions
 
+export const setToPrevQuestion = (): AppThunk =>
+    (dispatch, getState) => {
+        const currentValue = selectCurrentQuestionId(getState()) || "1";
+
+        try {
+            const intId: number = +currentValue
+
+            dispatch(setSelectedQuestion(String(intId - 1)))
+
+        } catch (error) {
+            throw new Error("Ur id should be int convertible!!!");
+        }
+    };
 export const setToNextQuestion = (): AppThunk =>
     (dispatch, getState) => {
         const currentValue = selectCurrentQuestionId(getState()) || "0";

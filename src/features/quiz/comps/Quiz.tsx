@@ -1,8 +1,8 @@
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useAppDispatch } from "../../../app/hooks"
+import { useAppDispatch, useAppSelector } from "../../../app/hooks"
 import { RootState } from "../../../app/store"
-import { anyQuestionIsSelecteed, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, toggleAnswer } from "../quizSlice"
+import { anyQuestionIsSelecteed, isAnswerSelected, isQuestionMultiSelection, QuestionAnswer, selectAllQuestionIds, selectIsInFirstQuestion, selectIsInLastQuestion, selectSelectedAnswersForQ, selectSelectedQuestion, setAnswer, setSelectedQuestion, setToNextQuestion, setToPrevQuestion, toggleAnswer } from "../quizSlice"
 
 export default () => {
     const anyIsSelected = useSelector(anyQuestionIsSelecteed)
@@ -27,9 +27,7 @@ export default () => {
                     </div>
 
                     <div className="h-12">
-                        <div className="flex flex-row justify-center align-middle">
-                            <ShowSelectableQuestions></ShowSelectableQuestions>
-                        </div>
+                        <ShowSelectableQuestions></ShowSelectableQuestions>
                     </div>
 
                 </div>
@@ -172,11 +170,43 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
 }
 
 function ShowSelectableQuestions() {
+    const dispatch = useAppDispatch()
+
     const ids = useSelector(selectAllQuestionIds)
 
+    const isFirst = useAppSelector(selectIsInFirstQuestion)
+    const isLast = useAppSelector(selectIsInLastQuestion)
+
+    const prevQ = () => isFirst ? null : dispatch(setToPrevQuestion())
+    const nextQ = () => isLast ? null : dispatch(setToNextQuestion())
+
     return (
-        <div>
-            {ids.map(ShowSelectableQuestion)}
+        <div className="flex flex-row justify-between align-middle">
+
+            <div className="w-10">
+                <button
+                    className="secondary-button"
+                    onClick={prevQ}
+                    disabled={isFirst}
+                >Previous</button>
+            </div>
+
+            <div className="grow">
+                <div className="flex flex-row justify-center">
+                    <div className="">
+                        {ids.map(ShowSelectableQuestion)}
+                    </div>
+                </div>
+            </div>
+
+            <div className="w-10">
+                <button
+                    className="secondary-button"
+                    onClick={nextQ}
+                    disabled={isLast}
+                >Next</button>
+            </div>
+
         </div>
     )
 }
