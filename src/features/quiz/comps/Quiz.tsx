@@ -9,10 +9,16 @@ export default () => {
 
     if (!anyIsSelected) return NotStartedQuiz()
 
-    return (<>
-        <ShowSelectedQuestion></ShowSelectedQuestion>
-        <ShowSelectableQuestions></ShowSelectableQuestions>
-    </>)
+    return (
+        <div className="flex flex-row">
+            <div className="w-3 sm:w-10 md:w-36 lg:w-96"></div>
+            <div className="grow">
+                <ShowSelectedQuestion></ShowSelectedQuestion>
+                <ShowSelectableQuestions></ShowSelectableQuestions>
+            </div>
+            <div className="sm:w-10 md:w-16 lg:w-96"></div>
+        </div>
+    )
 }
 
 function NotStartedQuiz() {
@@ -37,7 +43,7 @@ function ShowSelectedQuestion() {
     const selected = useSelector(selectSelectedQuestion)!
 
     return <div>
-        <span>{selected.text}</span>
+        <div className="my-3">{selected.text}</div>
         <div key={selected.id}>
             <ShowQuestionAnswers></ShowQuestionAnswers>
         </div>
@@ -94,12 +100,13 @@ function ShowQuestionAnswersRadio() {
                 answers.map(e =>
                     <div key={e.id}>
                         <input
+                            className="me-2"
                             type="radio"
                             value={e.id}
                             checked={e.id === selectedAnswerId}
                             onChange={onToggleChange}
                             name={e.id} />
-                        {e.text}
+                        <span>{e.text}</span>
                     </div>
                 )
             }
@@ -135,6 +142,7 @@ function ShowQAnswerCheckbox(ans: QuestionAnswer) {
 
     return <div key={ansid}>
         <input
+            className="me-2"
             type="checkbox"
             checked={isAnsSelected}
             onChange={onToggleChange}
